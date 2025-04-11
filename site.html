@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <!-- Configurações básicas do documento -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil Profissional</title>
+    
+    <!-- Bootstrap 5 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Flag Icon para bandeiras -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+
+    <!-- CSS personalizado -->
+    <style>
+        /* Reset e fundo padrão */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #222; /* Fundo preto padrão */
+        }
+        
+        /* Estilo do cabeçalho */
+        .profile-header {
+            background-color: #000; /* Preto sólido */
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 0;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        /* Fundo do header com GIF */
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmdkcGRrY3c2Z2RoMnp6NWQxY2tibm02Zjh4dmd3Mm1rYWZ2enNzbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUOwGdwxqXCukhgUmY/giphy.gif'            ) center/cover no-repeat;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+        
+        /* Header minimizado */
+        .profile-header.reduced {
+            height: 80px;
+            padding: 0 1rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111; /* Preto mais claro sólido */
+        }
+        
+        .profile-header.reduced::before {
+            opacity: 0; /* Esconde o GIF do header */
+        }
+        
+        /* Container do conteúdo do header */
+        .header-content {
+            transition: all 0.5s ease;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .profile-header.reduced .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+        }
+        
+        /* Container da foto e nome */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+        
+        /* Estilo da imagem do perfil */
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .profile-header.reduced .profile-img {
+            width: 50px;
+            height: 50px;
+            border-width: 2px;
+            margin-right: 15px;
+        }
+        
+        /* Estilo do nome e título */
+        .profile-text {
+            transition: all 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .profile-header.reduced .profile-text {
+            opacity: 0;
+            transform: translateY(-20px);
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+            position: absolute;
+        }
+        
+        /* Estilo dos ícones sociais - mantendo os efeitos originais */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            position: relative;
+            background-color: transparent;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        /* Efeito hover com cores originais */
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-icon.github:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+
+        .social-icon.linkedin:hover {
+            background-color: #0077b5;
+            border-color: #0077b5;
+        }
+
+        .social-icon.twitter:hover {
+            background-color: #1da1f2;
+            border-color: #1da1f2;
+        }
+
+        .social-icon.email:hover {
+            background-color: #d44638;
+            border-color: #d44638;
+        }
+
+        /* Estilo especial para o Instagram */
+        .social-icon.instagram {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-icon.instagram::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+            z-index: -1;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .social-icon.instagram:hover::before {
+            opacity: 1;
+        }
+
+        /* Conteúdo principal */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease 0.2s;
+            margin-top: 50vh;
+            position: sticky;
+            z-index: 1;
+            background: transparent;
+            pointer-events: none;
+        }
+        
+        .main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        /* Seção Sobre Mim */
+        #sobre-mim {
+            transition: all 0.3s ease 0.2s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .main-content.visible #sobre-mim {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Estilo dos cards - cinza muito escuro e mais transparente */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            margin-bottom: 20px;
+            background-color: rgba(30, 30, 30, 0.7); /* Cinza muito escuro com transparência */
+            color: white;
+            backdrop-filter: blur(8px); /* Efeito de desfoque aumentado */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Efeito hover para todos os cards (incluindo Sobre Mim) */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background-color: rgba(40, 40, 40, 0.8); /* Pouco mais opaco no hover */
+        }
+        
+        /* Estilo dos títulos das seções */
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            color: white;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 50px;
+            height: 3px;
+            background: white;
+        }
+        
+        /* Estilo dos badges de habilidades */
+        .skill-badge {
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Texto muted mais claro */
+        .text-muted {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        /* Barras de progresso */
+        .progress {
+            background-color: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px; /* Adicionando borda arredondada para combinar */
+            overflow: hidden; /* Garante que o gradiente respeite o border-radius */
+        }
+        
+        .progress-bar {
+            background: linear-gradient(
+                to right,
+                #d44638,
+                #f9c74f,
+                #FFC000,    
+                #9ACD32,
+                #228B22,
+                #00CC21,
+                #0f0
+
+            );
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        
+        
+        /* Botões */
+        .btn-outline-primary {
+            color: white;
+            border-color: white;
+            background-color: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: white;
+            color: #111;
+        }
+        
+        /* Timeline items */
+        .timeline-item {
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            padding-left: 20px;
+            position: relative;
+            margin-left: 15px;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: white;
+        }
+        
+        /* Ícones de timeline */
+        .bg-primary, .bg-info, .bg-dark, .bg-secondary {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Rodapé */
+        footer {
+            background-color: #111; /* Preto sólido */
+            color: white;
+        }
+        
+        /* Placeholder images */
+        .card-img-top {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho do Perfil -->
+    <header class="profile-header text-center" id="profileHeader">
+        <div class="container header-content">
+            <div class="profile-container">
+                <!-- Imagem do perfil -->
+                <img src="https://avatars.githubusercontent.com/u/177758743?v=4" alt="Foto de Perfil" class="profile-img rounded-circle" id="profileImage">
+                
+                <!-- Nome e título profissional -->
+                <div class="profile-text mt-4">
+                    <h1 id="profileName">Rafael Costa</h1>
+                    <p class="lead" id="profileTitle">Desenvolvedor de Sistemas | DevSecOps</p>
+                </div>
+            </div>
+            
+            <!-- Redes sociais -->
+            <div class="social-links" id="socialLinks">
+                <a href="https://github.com/daesukida" target="_blank" rel="noopener noreferrer" class="social-icon github">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/in/rafael-costa-b1569b235" target="_blank" rel="noopener noreferrer" class="social-icon linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" class="social-icon twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="mailto:alves.rafasc@gmail.com?subject=Contato%20Profissional&body=Olá,%20gostaria%20de%20conversar%20sobre..." 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="social-icon email">
+                   <i class="fas fa-envelope"></i>
+                </a>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container main-content" id="mainContent">
+        <div class="row">
+            <!-- Coluna Esquerda (30% em telas grandes) -->
+            <div class="col-lg-4">
+                <!-- Seção "Sobre Mim" -->
+                <div class="card" id="sobre-mim">
+                    <div class="card-body">
+                        <h3 class="section-title">Sobre Mim</h3>
+                        <p>
+                            Tenho 21 anos e estudo Engenharia de Computação. Como desenvolvedor, sou apaixonado por criar sistemas inovadores e resolver problemas complexos através da tecnologia. Busco constantemente aprimorar minhas habilidades para desenvolver soluções eficientes que impactem positivamente a vida das pessoas.
+                        </p>
+                        <!-- Lista de informações pessoais -->
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Brasilia, Brasil</li>
+                            <li class="mb-2"><i class="fas fa-birthday-cake me-2"></i> 18 de Outubro de 2003</li>
+                            <li class="mb-2"><i class="fas fa-graduation-cap me-2"></i> Engenharia de Computação (Cursando)</li>
+                            <li class="mb-2"><i class="fas fa-briefcase me-2"></i> Em busca do salário</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Seção "Habilidades" -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title">Habilidades</h3>
+                        <div class="d-flex flex-wrap">
+                            <!-- Badges de habilidades -->
+                            <span class="badge skill-badge">Java</span>
+                            <span class="badge skill-badge">JakartaEE</span>
+                            <span class="badge skill-badge">SpringBoot</span>
+                            <span class="badge skill-badge">Kotlin</span>
+                            <span class="badge skill-badge">SQL</span>
+                            <span class="badge skill-badge">NoSQL</span>
+                            <span class="badge skill-badge">Python</span>
+                            <span class="badge skill-badge">ML</span>
+                            <span class="badge skill-badge">ETL</span>
+                            <span class="badge skill-badge">JavaScript</span>
+                            <span class="badge skill-badge">React</span>
+                            <span class="badge skill-badge">Node.js</span>
+                            <span class="badge skill-badge">C++</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção "Idiomas" -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title">Idiomas</h3>
+                        
+                        <!-- Barra de progresso para Português -->
+                        <div class="mb-3">
+                            <h6>
+                                Português <span class="float-end">Nativo</span>
+                                <span class="flag-icon flag-icon-br"></span>
+                            </h6>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>
+                                Inglês <span class="float-end">Avançado</span>
+                                <span class="flag-icon flag-icon-us"></span>
+                            </h6>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h6>
+                                Japones <span class="float-end">Iniciante</span>
+                                <span class="flag-icon flag-icon-jp"></span>
+                            </h6>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 10%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coluna Direita (70% em telas grandes) -->
+            <div class="col-lg-8">
+                <!-- Seção "Experiência Profissional" -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title">Experiência Profissional</h3>
+                        
+                        <!-- Timeline de experiências -->
+                        <div class="timeline">
+                            <!-- Item 1 da timeline -->
+                            <div class="timeline-item mb-4">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-dark text-white rounded-circle p-2" style="width: 40px; height: 40px; text-align: center;">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Estagiario</h5>
+                                        <p class="text-muted mb-1">MPT - Ministerio Público do Trabalho • 2025 - Presente</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Item 2 da timeline -->
+                            <div class="timeline-item mb-4">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-dark text-white rounded-circle p-2" style="width: 40px; height: 40px; text-align: center;">
+                                            <i class="fas fa-briefcase"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Desenvolvedor Júnior</h5>
+                                        <p class="text-muted mb-1">Ministerio Público da União • 2026</p>
+                                        <p>Desenvolvimento de interfaces responsivas e integração com APIs REST. Trabalho em equipe ágil com metodologia Scrum.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Item 3 da timeline -->
+                            <div class="timeline-item">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-dark text-white rounded-circle p-2" style="width: 40px; height: 40px; text-align: center;">
+                                            <i class="fas fa-briefcase"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Desenvolvedor Pleno</h5>
+                                        <p class="text-muted mb-1">Susep - Superintendência de Seguros Privados • 2028 - </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção "Educação" -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title">Educação</h3>
+                        
+                        <!-- Timeline de educação -->
+                        <div class="timeline">
+                            <!-- Item 1 da timeline -->
+                            <div class="timeline-item mb-4">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-secondary text-white rounded-circle p-2" style="width: 40px; height: 40px; text-align: center;">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Bacharelado em Engenharia de Computação</h5>
+                                        <p class="text-muted mb-1">UNICEUB • 2023 - 2026</p>
+                                        <p>Pesquisa em Inteligência Artificial e Aprendizado de Máquina aplicado a autonomos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção "Projetos Recentes" -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title">Projetos Recentes</h3>
+                        
+                        <!-- Grid de projetos (2 colunas em telas médias/grandes) -->
+                        <div class="row">
+                            <!-- Projeto 1 -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/9780/9780616.png" class="card-img-top" alt="Projeto 1">
+                                    <div class="card-body">
+                                        <h5 class="card-title">WebServices</h5>
+                                        <p class="card-text">Infraestrutura de um E-commerce usando Node.js e Apache.</p>
+                                        <a href="#" class="btn btn-sm btn-outline-primary btn-clickable">Ver Projeto</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Projeto 2 -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <img src="https://27116888.fs1.hubspotusercontent-eu1.net/hub/27116888/hubfs/01.%20Website/02.%20Packaging%20Software%20Solutions/02.%20Purpose%20Built%20Solutions/01.%20Business%20Intelligence%20Solutions/ePS%20Packaging%20-%20Business%20Intelligence%20(BI)%20analytics%20software.png?width=2000&height=2000&name=ePS%20Packaging%20-%20Business%20Intelligence%20(BI)%20analytics%20software.png" class="card-img-top" alt="Projeto 2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Projeto Machine Learning</h5>
+                                        <p class="card-text">Algoritmo de regressão linear para avaliação de BI.</p>
+                                        <a href="#" class="btn btn-sm btn-outline-primary btn-clickable">Ver Projeto</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p class="mb-0">© 2025 Rafael Alves de Sousa Costa. Perfil Social.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle com Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para controlar a animação do header -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('profileHeader');
+            const mainContent = document.getElementById('mainContent');
+            let lastScrollPosition = 0;
+            let ticking = false;
+            
+            // Função para atualizar o header baseado no scroll
+            function updateHeader(scrollPos) {
+                const scrollPercentage = Math.min(scrollPos / 150, 1);
+                
+                if (scrollPercentage >= 1) {
+                    header.classList.add('reduced');
+                    mainContent.classList.add('visible');
+                } else {
+                    header.classList.remove('reduced');
+                    mainContent.classList.remove('visible');
+                    
+                    // Aplica transformações baseadas no scroll
+                    const scale = 1 - (scrollPercentage * 0.5);
+                    const opacity = 1 - scrollPercentage;
+                    const translateY = scrollPercentage * -50;
+                    
+                    document.querySelector('.profile-img').style.transform = `scale(${scale})`;
+                    document.querySelector('.profile-text').style.opacity = opacity;
+                    document.querySelector('.profile-text').style.transform = `translateY(${translateY}px)`;
+                }
+            }
+            
+            // Listener de scroll com throttling para performance
+            window.addEventListener('scroll', function() {
+                lastScrollPosition = window.scrollY;
+                
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        updateHeader(lastScrollPosition);
+                        ticking = false;
+                    });
+                    
+                    ticking = true;
+                }
+            });
+            
+            // Força a atualização inicial
+            updateHeader(0);
+        });
+    </script>
+</body>
+</html>
