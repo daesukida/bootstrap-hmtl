@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria BVA</title>
+    <meta name="description" content="Galeria de imagens com tema verde e amarelo, destacando a natureza e a biodiversidade.">
+    <meta name="keywords" content="galeria, natureza, verde, amarelo, imagens, biodiversidade">
+    <!-- Bootstrap 5 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS personalizado -->
+    <style>
+        /* Cores personalizadas */
+        :root {
+            --azul-escuro: #075eb5;
+            --verde-escuro: #2E7D32;
+            --verde-medio: #43A047;
+            --verde-claro: #81C784;
+            --verde-agua: #A5D6A7;
+            --amarelo-escuro: #F9A825;
+            --amarelo-medio: #FBC02D;
+            --amarelo-claro: #FFEB3B;
+            --amarelo-pastel: #FFF176;
+            --branco: #F5F5F5;
+            --preto: #212121;
+        }
+        
+        /* Fundo com GIF animado */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://i.gifer.com/1jzm.gif') center center fixed;
+            background-size: cover;
+            color: var(--preto);
+        }
+        
+        /* Overlay para melhor legibilidade */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+        }
+        
+        /* Barra lateral para links sociais */
+        .social-sidebar {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(67, 160, 71, 0.9);
+            padding: 15px 10px;
+            border-radius: 10px 0 0 10px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            font-size: 1.5rem;
+            color: var(--branco);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            background-color: var(--amarelo-medio);
+            color: var(--preto);
+        }
+        
+        /* Header estilizado */
+        .gallery-header {
+            background-color: rgba(46, 125, 50, 0.8); /* verde-escuro com transparência */
+            color: var(--branco);
+            padding: 2rem 0;
+            margin-bottom: 0;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .gallery-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(67, 160, 71, 0.7), rgba(249, 168, 37, 0.7));
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+        
+        .gallery-header.reduced {
+            height: 80px;
+            padding: 0 1rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(67, 160, 71, 0.95); /* verde-medio */
+        }
+        
+        .gallery-header.reduced::before {
+            opacity: 0;
+        }
+        
+        /* Conteúdo do header */
+        .title-container {
+            display: flex;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+        
+        .gallery-icon {
+            font-size: 3rem;
+            margin-right: 20px;
+            color: var(--amarelo-claro);
+            transition: all 0.5s ease;
+        }
+        
+        .gallery-header.reduced .gallery-icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+            color: var(--amarelo-claro);
+        }
+        
+        .gallery-text {
+            transition: all 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .gallery-header.reduced .gallery-text {
+            opacity: 0;
+            transform: translateY(-20px);
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+            position: absolute;
+        }
+        
+        /* Conteúdo principal - CENTRALIZADO */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease 0.2s;
+            margin-top: 50vh;
+            position: sticky;
+            z-index: 1;
+            background-color: rgba(190, 254, 190, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 90%;
+            max-width: 1200px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Galeria - CENTRALIZADA */
+        .gallery-container {
+            padding: 2rem 0;
+            margin: 0 auto;
+        }
+        
+        .filter-buttons {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-filter {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: var(--verde-escuro);
+            border: none;
+            transition: all 0.3s;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .btn-filter:hover, .btn-filter.active {
+            background-color: var(--amarelo-medio);
+            color: var(--branco);
+            transform: translateY(-2px);
+        }
+        
+        .img-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background-color: var(--branco);
+            border: 2px solid var(--amarelo-pastel);
+        }
+        
+        .img-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--verde-medio);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .img-container:hover .gallery-img {
+            transform: scale(1.05);
+        }
+        
+        .img-caption {
+            padding: 15px;
+            background-color: rgba(67, 160, 71, 0.9); /* verde-medio */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            color: var(--branco);
+        }
+        
+        .img-container:hover .img-caption {
+            transform: translateY(0);
+        }
+        
+        /* Badges */
+        .badge {
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .bg-verde {
+            background-color: var(--verde-medio);
+        }
+        
+        .bg-amarelo {
+            background-color: var(--amarelo-medio);
+        }
+        
+        /* Carrossel */
+        .carousel-section {
+            margin: 3rem auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 1000px;
+        }
+        
+        .carousel-item img {
+            height: 400px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .carousel-caption {
+            background-color: rgba(67, 160, 71, 0.8);
+            border-radius: 5px;
+            padding: 15px;
+            bottom: 20px;
+        }
+        
+        .carousel-indicators button {
+            background-color: var(--verde-claro);
+        }
+        
+        .carousel-indicators .active {
+            background-color: var(--amarelo-claro);
+        }
+        
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: var(--verde-medio);
+            border-radius: 50%;
+            padding: 10px;
+        }
+        
+        /* Rodapé */
+        footer {
+            background-color: var(--verde-escuro);
+            color: var(--branco);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        /* Títulos */
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            color: var(--verde-escuro);
+            text-align: center;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -10px;
+            width: 50px;
+            height: 3px;
+            background-color: var(--amarelo-medio);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .social-sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                width: 95%;
+                margin-right: auto;
+            }
+            
+            .gallery-header {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra lateral com links sociais -->
+    <div class="social-sidebar">
+        <a href="#" class="social-icon">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="social-icon">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="social-icon">
+            <i class="fab fa-pinterest-p"></i>
+        </a>
+        <a href="#" class="social-icon">
+            <i class="fas fa-envelope"></i>
+        </a>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="gallery-header text-center" id="galleryHeader">
+        <div class="container header-content">
+            <div class="title-container">
+                <div class="gallery-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                
+                <div class="gallery-text mt-4">
+                    <h1 id="galleryTitle">Galeria Natureza</h1>
+                    <p class="lead" id="gallerySubtitle">Verde e amarelo em harmonia</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container main-content" id="mainContent">
+        <div class="gallery-container">
+            <!-- Filtros -->
+            <div class="filter-buttons text-center">
+                <button class="btn btn-filter active" data-filter="all">Todos</button>
+                <button class="btn btn-filter" data-filter="natureza">Natureza</button>
+                <button class="btn btn-filter" data-filter="paisagens">Paisagens</button>
+                <button class="btn btn-filter" data-filter="flores">Flores</button>
+                <button class="btn btn-filter" data-filter="animais">Animais</button>
+            </div>
+            
+            <!-- Galeria Grid - CENTRALIZADA -->
+            <div class="row gallery-grid justify-content-center">
+                <!-- Imagem 1 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="natureza">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Floresta verde">
+                        <div class="img-caption">
+                            <h5>Floresta Tropical</h5>
+                            <p>Vegetação exuberante em tons de verde</p>
+                            <span class="badge bg-verde">Natureza</span>
+                            <span class="badge bg-amarelo">Paisagem</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem 2 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="paisagens">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Campo amarelo">
+                        <div class="img-caption">
+                            <h5>Campo de Girassóis</h5>
+                            <p>Amarelo vibrante sob o céu azul</p>
+                            <span class="badge bg-amarelo">Paisagem</span>
+                            <span class="badge bg-verde">Flores</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem 3 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="flores">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Margaridas">
+                        <div class="img-caption">
+                            <h5>Margaridas</h5>
+                            <p>Branco e amarelo em harmonia</p>
+                            <span class="badge bg-verde">Jardim</span>
+                            <span class="badge bg-amarelo">Flores</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem 4 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="animais">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1551085254-e96b210db58a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Pássaro colorido">
+                        <div class="img-caption">
+                            <h5>Arara Amarela</h5>
+                            <p>Beleza tropical em cores vibrantes</p>
+                            <span class="badge bg-amarelo">Aves</span>
+                            <span class="badge bg-verde">Natureza</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem 5 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="natureza">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1470114716159-e389f8712fda?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Lago na floresta">
+                        <div class="img-caption">
+                            <h5>Lago Esmeralda</h5>
+                            <p>Águas verdes refletindo a floresta</p>
+                            <span class="badge bg-verde">Água</span>
+                            <span class="badge bg-amarelo">Reflexos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem 6 -->
+                <div class="col-lg-4 col-md-6 col-sm-10 mb-4" data-category="paisagens">
+                    <div class="img-container">
+                        <img src="https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="gallery-img" alt="Trigo dourado">
+                        <div class="img-caption">
+                            <h5>Campo de Trigo</h5>
+                            <p>Dourado sob o céu azul</p>
+                            <span class="badge bg-amarelo">Paisagem</span>
+                            <span class="badge bg-verde">Agricultura</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carrossel de Destaques - CENTRALIZADO -->
+            <div class="carousel-section">
+                <h2 class="section-title">Destaques</h2>
+                
+                <div id="galleryCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="2"></button>
+                    </div>
+                    
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Destaque 1">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Floresta Amazônica</h5>
+                                <p>Verdes intensos da maior floresta tropical</p>
+                            </div>
+                        </div>
+                        
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Destaque 2">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Campos de Canola</h5>
+                                <p>Amarelos vibrantes na primavera</p>
+                            </div>
+                        </div>
+                        
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1551085254-e96b210db58a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Destaque 3">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Biodiversidade</h5>
+                                <p>Cores da fauna brasileira</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    
+                    <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">© 2023 Galeria Natureza | Verde e Amarelo</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle com Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts personalizados -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('galleryHeader');
+            const mainContent = document.getElementById('mainContent');
+            let lastScrollPosition = 0;
+            let ticking = false;
+            
+            function updateHeader(scrollPos) {
+                const scrollPercentage = Math.min(scrollPos / 150, 1);
+                
+                if (scrollPercentage >= 1) {
+                    header.classList.add('reduced');
+                    mainContent.classList.add('visible');
+                } else {
+                    header.classList.remove('reduced');
+                    mainContent.classList.remove('visible');
+                    
+                    const scale = 1 - (scrollPercentage * 0.5);
+                    const opacity = 1 - scrollPercentage;
+                    const translateY = scrollPercentage * -50;
+                    
+                    document.querySelector('.gallery-icon').style.transform = `scale(${scale})`;
+                    document.querySelector('.gallery-text').style.opacity = opacity;
+                    document.querySelector('.gallery-text').style.transform = `translateY(${translateY}px)`;
+                }
+            }
+            
+            window.addEventListener('scroll', function() {
+                lastScrollPosition = window.scrollY;
+                
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        updateHeader(lastScrollPosition);
+                        ticking = false;
+                    });
+                    
+                    ticking = true;
+                }
+            });
+            
+            const filterButtons = document.querySelectorAll('.btn-filter');
+            const galleryItems = document.querySelectorAll('.gallery-grid [data-category]');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    galleryItems.forEach(item => {
+                        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            const myCarousel = new bootstrap.Carousel(document.getElementById('galleryCarousel'), {
+                interval: 5000,
+                wrap: true
+            });
+            
+            updateHeader(0);
+        });
+    </script>
+</body>
+</html>
